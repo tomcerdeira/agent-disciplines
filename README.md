@@ -100,6 +100,8 @@ This first version is deliberately spec-first:
 
 Future adapters can translate the same `.degree.md` files into Cursor, Claude Code, Codex, or generic prompt-only workflows. See [docs/adapter-notes.md](docs/adapter-notes.md).
 
+Resolver behavior is specified in [docs/resolver-spec.md](docs/resolver-spec.md). V1 treats resolution as advisory semantics, not a committed runtime implementation.
+
 ## Manual Validation
 
 Use [examples/task-resolution.md](examples/task-resolution.md), [examples/composed-degrees.md](examples/composed-degrees.md), and [examples/validation-matrix.md](examples/validation-matrix.md) to test whether a degree makes the initial context smaller and more relevant. The expected v1 outcome is better steering, not perfect classification.
