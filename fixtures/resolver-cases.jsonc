@@ -19,6 +19,30 @@
     }
   },
   {
+    "name": "thenetwork candidates keyboard shortcuts",
+    "task": "In thenetwork-frontend, update the desktop /candidates view so Shift+Tab moves between candidate status tabs and Shift+ArrowUp/Down moves between roles.",
+    "repoSignals": {
+      "files": [
+        "src/modules/candidates/views/candidates-view.tsx",
+        "src/modules/candidates/client/hooks/use-candidates-page.ts",
+        "src/modules/candidates/ui/role-vertical-tabs.tsx",
+        "src/modules/candidates/ui/candidate-bucket-tabs.tsx"
+      ]
+    },
+    "commands": ["bun run typecheck", "bun test src/modules/candidates/model/candidate-keyboard-shortcuts.test.ts"],
+    "expected": {
+      "decision": "select",
+      "primaryDegree": "frontend-engineer",
+      "secondaryDegree": null,
+      "matchedSignals": {
+        "pathPatterns": ["**/*.tsx", "src/modules/**"],
+        "commandPatterns": ["\\b(npm|pnpm|bun|yarn)\\s+run\\s+(dev|build|lint|test|typecheck|check)\\b"],
+        "promptSignals": ["keyboard shortcuts"]
+      },
+      "reason": "Candidate TSX files, keyboard shortcut language, and frontend verification commands point to frontend work."
+    }
+  },
+  {
     "name": "backend rate limit endpoint",
     "task": "Add a rate limit to the invite creation endpoint and cover it with unit tests.",
     "repoSignals": {

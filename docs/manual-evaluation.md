@@ -15,6 +15,7 @@ Pick two or three real tasks that you would naturally give an agent:
 This repo includes ready-to-use bundles:
 
 - [Frontend keyboard navigation](../examples/manual-bundles/frontend-keyboard-navigation.md)
+- [TheNetwork candidates keyboard shortcuts](../examples/manual-bundles/thenetwork-candidates-keyboard-shortcuts.md)
 - [Backend rate limit](../examples/manual-bundles/backend-rate-limit.md)
 - [Billing settings compose](../examples/manual-bundles/billing-settings-compose.md)
 
@@ -54,6 +55,7 @@ Use this table after each run:
 | Task | Baseline first plan | Degree first plan | Better first plan? | Context bloat reduced? | Tool choice improved? | Bad exclusion? | Metadata changes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Frontend keyboard navigation |  |  |  |  |  |  |  |
+| TheNetwork candidates keyboard shortcuts |  |  |  |  |  |  |  |
 | Backend rate limit |  |  |  |  |  |  |  |
 | Billing settings compose |  |  |  |  |  |  |  |
 

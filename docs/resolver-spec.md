@@ -119,9 +119,9 @@ A resolver should emit a compact bundle:
       "status": "unknown"
     },
     {
-      "id": "npm",
+      "id": "package-manager",
       "kind": "package-manager",
-      "purpose": "Run frontend scripts such as typecheck, lint, test, and build.",
+      "purpose": "Run the repository's configured frontend scripts such as typecheck, lint, test, and build.",
       "status": "unknown"
     }
   ],

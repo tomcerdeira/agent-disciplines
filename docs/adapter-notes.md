@@ -63,9 +63,9 @@ A future resolver can produce a small bundle:
       "purpose": "Inspect and verify user-visible behavior in a real browser."
     },
     {
-      "id": "npm",
+      "id": "package-manager",
       "kind": "package-manager",
-      "purpose": "Run frontend scripts such as typecheck, lint, test, and build."
+      "purpose": "Run the repository's configured frontend scripts such as typecheck, lint, test, and build."
     }
   ],
   "softExcludeSkills": ["backend-patterns", "database-migrations"],

@@ -117,9 +117,10 @@ recommendedTools:
     kind: mcp
     purpose: Inspect and verify user-visible behavior in a real browser.
     when: Use after UI changes, layout fixes, accessibility work, or visual regression checks.
-  - id: npm
+  - id: package-manager
     kind: package-manager
-    purpose: Run frontend scripts such as typecheck, lint, test, and build.
+    purpose: Run the repository's configured frontend scripts such as typecheck, lint, test, and build.
+    when: Prefer the package manager required by local repo instructions.
 ```
 
 Tool recommendations should not assume availability. Do not tell adapters to install, configure, or execute tools automatically.

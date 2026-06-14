@@ -19,9 +19,10 @@ recommendedTools:
     kind: mcp
     purpose: Inspect and verify user-visible behavior in a real browser.
     when: Use after UI changes, layout fixes, accessibility work, or visual regression checks.
-  - id: npm
+  - id: package-manager
     kind: package-manager
-    purpose: Run frontend scripts such as typecheck, lint, test, and build.
+    purpose: Run the repository's configured frontend scripts such as typecheck, lint, test, and build.
+    when: Prefer the package manager required by local repo instructions, such as bun, npm, pnpm, or yarn.
   - id: playwright
     kind: cli
     purpose: Run browser-level tests and targeted UI flows when available.
@@ -29,11 +30,12 @@ activation:
   pathPatterns:
     - "**/*.tsx"
     - "**/*.jsx"
+    - "src/modules/**"
     - "src/components/**"
     - "app/**/page.tsx"
     - "app/**/layout.tsx"
   commandPatterns:
-    - "\\b(npm|pnpm|bun|yarn)\\s+run\\s+(dev|build|lint|test)\\b"
+    - "\\b(npm|pnpm|bun|yarn)\\s+run\\s+(dev|build|lint|test|typecheck|check)\\b"
     - "\\bplaywright\\b"
   promptSignals:
     phrases:
@@ -43,6 +45,7 @@ activation:
       - styling
       - accessibility
       - keyboard navigation
+      - keyboard shortcuts
       - browser verification
       - settings page
     allOf:

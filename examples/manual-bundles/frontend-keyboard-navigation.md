@@ -29,7 +29,7 @@ Treat backend, database, infrastructure, and data-pipeline skills as soft exclus
 ## Recommended Tools
 
 - `browser` (`mcp`): inspect and verify user-visible behavior in a real browser.
-- `npm` (`package-manager`): run frontend scripts such as typecheck, lint, test, and build.
+- `package-manager` (`package-manager`): run the repository's configured frontend scripts such as typecheck, lint, test, and build.
 - `playwright` (`cli`): run browser-level tests and targeted UI flows when available.
 
 ## Soft Exclusions

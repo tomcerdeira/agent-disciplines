@@ -35,11 +35,11 @@
         "reason": "Task explicitly asks to verify browser behavior."
       },
       {
-        "id": "npm",
+        "id": "package-manager",
         "kind": "package-manager",
-        "purpose": "Run frontend scripts such as typecheck, lint, test, and build.",
+        "purpose": "Run the repository's configured frontend scripts such as typecheck, lint, test, and build.",
         "status": "unknown",
-        "reason": "Frontend verification usually needs package scripts, but availability was not checked."
+        "reason": "Frontend verification usually needs package scripts, but the repo-specific package manager was not checked."
       }
     ],
     "softExcludeSkills": [
