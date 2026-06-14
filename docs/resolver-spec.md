@@ -130,7 +130,7 @@ A resolver should emit a compact bundle:
 }
 ```
 
-The exact JSON field order is not significant. Adapters may add runtime-specific fields, but should preserve the portable fields above.
+The exact JSON field order is not significant. Adapters may add runtime-specific fields, but should preserve the portable fields above. See [../examples/resolver-output.jsonc](../examples/resolver-output.jsonc) for complete `select`, `compose`, `ask`, and `none` examples.
 
 ## Recommended Tool Status
 

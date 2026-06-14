@@ -104,7 +104,7 @@ Resolver behavior is specified in [docs/resolver-spec.md](docs/resolver-spec.md)
 
 ## Manual Validation
 
-Use [examples/task-resolution.md](examples/task-resolution.md), [examples/composed-degrees.md](examples/composed-degrees.md), and [examples/validation-matrix.md](examples/validation-matrix.md) to test whether a degree makes the initial context smaller and more relevant. The expected v1 outcome is better steering, not perfect classification.
+Use [examples/task-resolution.md](examples/task-resolution.md), [examples/composed-degrees.md](examples/composed-degrees.md), [examples/resolver-output.jsonc](examples/resolver-output.jsonc), and [examples/validation-matrix.md](examples/validation-matrix.md) to test whether a degree makes the initial context smaller and more relevant. The expected v1 outcome is better steering, not perfect classification.
 
 ## Repository Validation
 

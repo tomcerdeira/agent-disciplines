@@ -1,0 +1,142 @@
+[
+  // Select one primary degree when the task has strong direct evidence.
+  {
+    "decision": "select",
+    "task": "Fix keyboard navigation in SearchResults.tsx and verify it in browser.",
+    "selectedDegrees": [
+      {
+        "id": "frontend-engineer",
+        "role": "primary",
+        "confidence": 0.84,
+        "reason": "Task mentions a TSX file, keyboard navigation, and browser verification."
+      }
+    ],
+    "includeSkills": [
+      "react-best-practices",
+      "frontend-design",
+      "accessibility-review",
+      "browser-verification",
+      "e2e-testing"
+    ],
+    "recommendedTools": [
+      {
+        "id": "browser",
+        "kind": "mcp",
+        "purpose": "Inspect and verify user-visible behavior in a real browser.",
+        "status": "available",
+        "reason": "Task explicitly asks to verify browser behavior."
+      },
+      {
+        "id": "npm",
+        "kind": "package-manager",
+        "purpose": "Run frontend scripts such as typecheck, lint, test, and build.",
+        "status": "unknown",
+        "reason": "Frontend verification usually needs package scripts, but availability was not checked."
+      }
+    ],
+    "softExcludeSkills": [
+      "backend-patterns",
+      "database-migrations",
+      "infrastructure-deployments",
+      "data-pipelines"
+    ],
+    "prompt": "You are operating under the Frontend Engineer degree.",
+    "notes": [
+      "Backend and database context should stay out unless the UI bug crosses an API boundary."
+    ]
+  },
+
+  // Compose degrees when the task crosses a concrete boundary.
+  {
+    "decision": "compose",
+    "task": "Add a billing settings page that lets an admin update invoice recipients.",
+    "selectedDegrees": [
+      {
+        "id": "frontend-engineer",
+        "role": "primary",
+        "confidence": 0.76,
+        "reason": "The visible workflow is a settings page."
+      },
+      {
+        "id": "backend-engineer",
+        "role": "secondary",
+        "confidence": 0.68,
+        "reason": "The task also requires API and permission behavior for invoice recipients."
+      }
+    ],
+    "includeSkills": [
+      "react-best-practices",
+      "frontend-design",
+      "accessibility-review",
+      "browser-verification",
+      "api-design",
+      "backend-patterns",
+      "unit-testing"
+    ],
+    "recommendedTools": [
+      {
+        "id": "browser",
+        "kind": "mcp",
+        "purpose": "Inspect and verify user-visible behavior in a real browser.",
+        "status": "unknown",
+        "reason": "The task includes a user-facing settings page."
+      },
+      {
+        "id": "git",
+        "kind": "cli",
+        "purpose": "Inspect diffs, history, branches, and review scope.",
+        "status": "available",
+        "reason": "Full-stack changes should stay scoped and reviewable."
+      },
+      {
+        "id": "database-client",
+        "kind": "service",
+        "purpose": "Inspect schemas, indexes, query plans, and read-only data samples.",
+        "status": "missing",
+        "reason": "Useful if invoice recipients are persisted, but not required before code evidence."
+      }
+    ],
+    "softExcludeSkills": [
+      "infrastructure-deployments",
+      "data-pipelines",
+      "presentation-design",
+      "spreadsheet-formatting"
+    ],
+    "prompt": "Use the Frontend Engineer degree as primary. Add only the backend context needed for API and permission boundaries.",
+    "notes": [
+      "Do not merge every skill from both degrees.",
+      "The backend degree is secondary because the user-facing workflow is the main surface."
+    ]
+  },
+
+  // Ask when weak language could map to several domains.
+  {
+    "decision": "ask",
+    "task": "Improve onboarding.",
+    "question": "Should I treat this as product research, frontend implementation, or analytics work?",
+    "choices": [
+      "product-researcher",
+      "frontend-engineer",
+      "data-analyst"
+    ],
+    "reason": "The task is broad and could map to several degrees without stronger evidence.",
+    "notes": [
+      "Do not select a degree just because onboarding is vaguely product-related."
+    ]
+  },
+
+  // Return none when the available degrees do not fit the task.
+  {
+    "decision": "none",
+    "task": "Draft a legal review checklist for a vendor data-processing agreement.",
+    "selectedDegrees": [],
+    "includeSkills": [],
+    "recommendedTools": [],
+    "softExcludeSkills": [],
+    "reason": "No available degree covers legal review or contract analysis.",
+    "fallback": {
+      "mode": "prompt-only",
+      "guidance": "Proceed without a degree, state that no matching degree exists, and ask whether the user wants to add a legal or compliance degree."
+    }
+  }
+]
