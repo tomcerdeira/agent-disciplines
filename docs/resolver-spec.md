@@ -1,6 +1,6 @@
 # Resolver Spec
 
-The resolver is the advisory process that maps a user task to one or more degrees. V1 defines the expected behavior and output shape, not a required implementation.
+The resolver is the advisory process that maps a user task to one or more degrees. V1 defines the expected behavior and output shape, and includes a local prompt-only resolver script that follows the same semantics.
 
 Adapters may implement resolution with deterministic heuristics, embeddings, LLM judgment, or a manual user choice. Whatever the implementation, it should follow this contract.
 
@@ -213,6 +213,6 @@ The resolver should be conservative:
 - Keep reasons short enough for a human to audit.
 - Treat confidence as an explanation aid, not a mathematical guarantee.
 
-Future resolver implementations should be tested against [../examples/validation-matrix.md](../examples/validation-matrix.md).
+Resolver implementations should be tested against [../examples/validation-matrix.md](../examples/validation-matrix.md).
 
-Machine-readable fixture cases live in [../fixtures/resolver-cases.jsonc](../fixtures/resolver-cases.jsonc). These fixtures define expected decisions and matched signals, but they do not imply that v1 ships a resolver runtime.
+Machine-readable fixture cases live in [../fixtures/resolver-cases.jsonc](../fixtures/resolver-cases.jsonc). These fixtures define expected decisions and matched signals for the local resolver heuristic and future adapters.

@@ -24,7 +24,7 @@ Degrees provide a portable curation layer above skills. They describe which skil
 - **Soft exclusion**: A skill or skill family that should not be loaded by default, but may be loaded when explicitly requested or supported by concrete task evidence.
 - **Activation signal**: A structured path pattern, command pattern, prompt signal, or score threshold that helps map a user task to a degree.
 - **Focus prompt**: The markdown body of `DEGREE.md`. It tells the agent how to behave while operating under that degree.
-- **Resolver**: A future adapter or manual process that compares a task against available degrees and emits an advisory context bundle.
+- **Resolver**: An advisory process or script that compares a task against available degrees and emits a context bundle.
 
 ## Progressive Disclosure
 
@@ -99,16 +99,40 @@ Only load backend, database, or infrastructure skills when the user explicitly a
 
 The portable schema lives at [schema/degree.schema.json](schema/degree.schema.json). The markdown body is intentionally free-form so each runtime can preserve its natural prompt style. See [docs/authoring-degrees.md](docs/authoring-degrees.md) before adding new degree packages.
 
+To start a new degree, copy [templates/degree/DEGREE.md](templates/degree/DEGREE.md) into a new folder such as `degrees/software-engineer/DEGREE.md`, then update the folder name, frontmatter `id`, activation signals, skill ids, tool recommendations, and focus prompt.
+
 ## Intended Workflow
 
 1. A user gives the agent a task.
-2. The agent, user, or future resolver compares the task with lightweight degree metadata and `activation` signals.
+2. The agent, user, or resolver compares the task with lightweight degree metadata and `activation` signals.
 3. The best matching degree is selected or composed. If confidence is low, the agent asks the user to choose.
 4. The agent loads only the selected degree's `DEGREE.md` body and frontmatter bundle.
 5. The agent maps the degree's `includeSkills` and `recommendedTools` to available local skills, MCPs, CLIs, package managers, runtimes, or services.
 6. The agent loads matching skill bodies or tool instructions only when they are needed for the task.
 7. The agent treats `softExcludeSkills` as advisory boundaries, not hard blocks.
 8. If direct evidence appears, the agent may load an excluded or adjacent skill and should state why.
+
+## Prompt-Only Usage
+
+V1 includes a small resolver script that turns a normal task into a copy-paste degree bundle. It is advisory and local: it reads degree metadata, selects/composes/asks/none, and prints the selected degree prompt plus skill/tool shortlists. It does not install tools, hide skills, or run task commands.
+
+```sh
+npm run resolve -- \
+  --task "Fix keyboard shortcuts in the desktop candidates page" \
+  --file src/modules/candidates/client/hooks/use-candidates-page.ts \
+  --file src/modules/candidates/ui/candidate-bucket-tabs.tsx \
+  --command "bun run typecheck"
+```
+
+Paste the prompt output above your normal request in Cursor, Claude Code, Codex, or a generic chat model. For integrations or debugging, emit structured JSON instead:
+
+```sh
+npm run resolve -- --format json --task "Analyze exports/activation.csv" --file exports/activation.csv
+```
+
+Copy-paste templates live in [templates/adapters/](templates/adapters/). They provide task-local preludes for generic chat, Cursor, Claude Code, and Codex.
+
+If the resolver returns `ask`, choose the degree manually or provide stronger task/file/command evidence. If it returns `none`, proceed without a degree or author a new one.
 
 ## Example Degrees
 
@@ -126,8 +150,8 @@ These are examples, not a universal ontology. Real teams should rename skills to
 
 This first version is deliberately spec-first:
 
-- No CLI.
 - No runtime integration.
+- No installed global CLI or agent plugin.
 - No hidden files.
 - No mutation of installed skills.
 - No automatic installation of MCP servers, CLIs, or services.
@@ -136,7 +160,7 @@ This first version is deliberately spec-first:
 
 Future adapters can translate the same degree packages into Cursor, Claude Code, Codex, or generic prompt-only workflows. See [docs/adapter-notes.md](docs/adapter-notes.md).
 
-Resolver behavior is specified in [docs/resolver-spec.md](docs/resolver-spec.md). V1 treats resolution as advisory semantics, not a committed runtime implementation.
+Resolver behavior is specified in [docs/resolver-spec.md](docs/resolver-spec.md). V1 includes a local prompt-only resolver script for usability, but treats resolution as advisory semantics rather than runtime enforcement.
 
 ## Manual Validation
 
@@ -149,8 +173,9 @@ Use [docs/manual-evaluation.md](docs/manual-evaluation.md) and the bundles in [e
 Run the local validator before changing degree packages:
 
 ```sh
+npm run resolve -- --task "Fix keyboard navigation in SearchResults.tsx" --file src/components/SearchResults.tsx
 npm run validate
 npm run check:fixtures
 ```
 
-The validator checks the portable schema JSON, package layout, frontmatter, required fields, duplicate ids, skill ids, recommended tool entries, resolver fixture shape, and non-empty markdown bodies. The fixture check runs an experimental resolver heuristic against the fixture cases to pressure-test activation metadata. It is repository hygiene only; it does not execute recommended tools.
+The resolver command prints an advisory prompt bundle for real tasks. The validator checks the portable schema JSON, package layout, frontmatter, required fields, duplicate ids, skill ids, recommended tool entries, resolver fixture shape, and non-empty markdown bodies. The fixture check runs the same resolver heuristic against fixture cases to pressure-test activation metadata. None of these scripts execute recommended tools.

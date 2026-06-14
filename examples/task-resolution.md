@@ -1,6 +1,6 @@
 # Task Resolution Examples
 
-These examples show how a human or future resolver might map a task to a degree. Scores are illustrative.
+These examples show how a human, the local resolver script, or a future adapter might map a task to a degree. Scores are illustrative.
 
 ## Frontend Task
 

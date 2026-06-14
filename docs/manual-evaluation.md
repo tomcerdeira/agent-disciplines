@@ -1,8 +1,8 @@
 # Manual Evaluation
 
-Use this playbook to test degrees in real agent sessions before building adapters.
+Use this playbook to test degrees in real agent sessions before building runtime adapters.
 
-The goal is to compare normal agent behavior against degree-guided behavior on real tasks. This is not a benchmark and does not require a resolver runtime.
+The goal is to compare normal agent behavior against degree-guided behavior on real tasks. This is not a benchmark; use either the manual bundles or `npm run resolve -- ...` as the degree-guided input.
 
 ## What to Test
 
@@ -37,7 +37,7 @@ Record:
 
 ### Pass B: Degree-Guided
 
-Give the same task plus the matching manual bundle.
+Give the same task plus the matching manual bundle or the output of `npm run resolve -- ...`.
 
 Record:
 

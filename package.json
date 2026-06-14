@@ -5,6 +5,7 @@
   "description": "Spec-first portable degree profiles for agent skills and tools.",
   "type": "module",
   "scripts": {
+    "resolve": "node scripts/resolve-degree.mjs",
     "validate": "node scripts/validate-degrees.mjs",
     "check:fixtures": "node scripts/check-resolver-fixtures.mjs"
   },

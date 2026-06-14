@@ -1,6 +1,6 @@
 # Adapter Notes
 
-Adapters are future work. V1 defines the portable degree format and manual resolution behavior only.
+Runtime adapters are future work. V1 defines the portable degree format, local prompt-only resolution, and manual adapter behavior only.
 
 ## Shared Loading Model
 
@@ -16,7 +16,13 @@ Do not concatenate every degree body into the initial prompt. The degree layer s
 
 ## Generic Prompt-Only Usage
 
-A generic adapter can first show or consider the available degree metadata, then concatenate:
+The built-in prompt-only adapter is:
+
+```sh
+npm run resolve -- --task "Fix keyboard navigation" --file src/components/SearchResults.tsx
+```
+
+It first considers the available degree metadata, then prints:
 
 1. The selected degree markdown body.
 2. A short list of included skill ids.
@@ -27,6 +33,10 @@ A generic adapter can first show or consider the available degree metadata, then
 
 This works even when the agent runtime has no formal skill system.
 
+Use `--format json` when another adapter needs structured output instead of copy-paste markdown.
+
+Template: [../templates/adapters/generic-prompt.md](../templates/adapters/generic-prompt.md)
+
 ## Cursor
 
 A Cursor adapter could translate a selected degree into a prompt prelude or project rule. It should not mutate installed rules automatically. The safest first version would generate text the user can review and paste into the relevant Cursor instruction surface.
@@ -34,6 +44,10 @@ A Cursor adapter could translate a selected degree into a prompt prelude or proj
 Cursor output should be generated from selected degree packages only. Degree metadata can be indexed broadly, but full degree bodies should stay out of the prompt until selected.
 
 If the degree recommends tools, Cursor output should describe them as preferred evidence sources or commands. It should not assume MCPs or CLIs are configured unless the local environment confirms them.
+
+V1 usage: run `npm run resolve -- ...` and paste the prompt output above the Cursor task.
+
+Template: [../templates/adapters/cursor.md](../templates/adapters/cursor.md)
 
 ## Claude Code
 
@@ -43,6 +57,10 @@ It should resolve from degree metadata first, then load only the selected `DEGRE
 
 Recommended CLIs can be rendered as suggested commands or tool preferences. Recommended MCPs should be rendered only when the adapter can map the portable id to a configured MCP server.
 
+V1 usage: run `npm run resolve -- ...` and paste the prompt output before the Claude Code task.
+
+Template: [../templates/adapters/claude-code.md](../templates/adapters/claude-code.md)
+
 ## Codex
 
 A Codex adapter could map `includeSkills` to available Codex skills when ids match, then add the degree body as a task-local focus instruction. If a matching skill is unavailable, the adapter should report the missing id rather than silently substituting unrelated context.
@@ -51,9 +69,13 @@ Codex already exposes skill metadata before loading skill bodies. A Codex degree
 
 Recommended tools can map to Codex MCP tools, shell CLIs, browser tools, or app connectors. Missing tools should be reported explicitly, and installations should remain user-approved.
 
+V1 usage: run `npm run resolve -- ...` and paste the prompt output into the Codex task, or use the JSON output as an adapter input.
+
+Template: [../templates/adapters/codex.md](../templates/adapters/codex.md)
+
 ## Resolver Output Shape
 
-A future resolver can produce a small bundle:
+The local resolver and future adapters can produce a small bundle:
 
 ```json
 {
@@ -92,4 +114,4 @@ A future resolver can produce a small bundle:
 }
 ```
 
-This is an adapter contract sketch, not a committed runtime API.
+This is an adapter contract sketch, not a runtime enforcement API.

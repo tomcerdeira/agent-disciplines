@@ -16,6 +16,15 @@ degrees/
 
 The folder name is the canonical package id and must match the frontmatter `id`.
 
+Start from the template when creating a new degree:
+
+```sh
+mkdir -p degrees/software-engineer
+cp templates/degree/DEGREE.md degrees/software-engineer/DEGREE.md
+```
+
+Then change both the folder name and frontmatter `id` to the same kebab-case value.
+
 Future package resources can live beside `DEGREE.md`:
 
 ```text
