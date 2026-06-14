@@ -129,6 +129,8 @@ Resolver behavior is specified in [docs/resolver-spec.md](docs/resolver-spec.md)
 
 Use [examples/task-resolution.md](examples/task-resolution.md), [examples/composed-degrees.md](examples/composed-degrees.md), [examples/resolver-output.jsonc](examples/resolver-output.jsonc), and [examples/validation-matrix.md](examples/validation-matrix.md) to test whether a degree makes the initial context smaller and more relevant. The expected v1 outcome is better steering, not perfect classification.
 
+Use [docs/manual-evaluation.md](docs/manual-evaluation.md) and the bundles in [examples/manual-bundles/](examples/manual-bundles/) to compare baseline agent behavior against degree-guided behavior on real tasks.
+
 ## Repository Validation
 
 Run the local validator before changing degree packages:
