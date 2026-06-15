@@ -168,6 +168,8 @@ This creates `software-engineer/DISCIPLINE.md` from the template.
 
 Names are normalized into schema-valid ids, so `disciplines init "Software Engineer"` also creates `software-engineer/DISCIPLINE.md`.
 
+In an interactive terminal, `disciplines init` prompts for a name with Clack. In non-interactive shells it keeps the script-friendly behavior of creating `DISCIPLINE.md` in the current directory.
+
 ## Doctor
 
 ```sh

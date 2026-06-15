@@ -9,6 +9,7 @@ import readline from "node:readline/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
+import { cancel, intro, isCancel, outro, text } from "@clack/prompts";
 import { Command } from "commander";
 import { z } from "zod";
 import {
@@ -932,8 +933,25 @@ function disciplineIdFromName(name) {
 }
 
 async function commandInit(name) {
-  const id = disciplineIdFromName(name ?? path.basename(process.cwd()));
-  const targetDir = name ? path.resolve(process.cwd(), id) : process.cwd();
+  let rawName = name;
+
+  if (!rawName && process.stdin.isTTY && process.stdout.isTTY) {
+    intro("Create a discipline");
+    const value = await text({
+      message: "Discipline name",
+      placeholder: "software-engineer",
+      defaultValue: path.basename(process.cwd()),
+      validate: (input) => input.trim() ? undefined : "Enter a discipline name.",
+    });
+    if (isCancel(value)) {
+      cancel("Init cancelled.");
+      process.exit(0);
+    }
+    rawName = value;
+  }
+
+  const id = disciplineIdFromName(rawName ?? path.basename(process.cwd()));
+  const targetDir = rawName ? path.resolve(process.cwd(), id) : process.cwd();
   const filePath = path.join(targetDir, "DISCIPLINE.md");
   if (existsSync(filePath)) throw new Error(`${filePath} already exists`);
   const template = await readFile(path.join(CLI_ROOT, "templates", "discipline", "DISCIPLINE.md"), "utf8");
@@ -944,6 +962,7 @@ async function commandInit(name) {
   await mkdir(targetDir, { recursive: true });
   await writeFile(filePath, content);
   console.log(`write ${filePath}`);
+  if (process.stdin.isTTY && process.stdout.isTTY) outro(`Created ${path.relative(process.cwd(), filePath) || "DISCIPLINE.md"}.`);
 }
 
 function doctorLine(status, label, detail = "") {
