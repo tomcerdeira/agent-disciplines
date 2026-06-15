@@ -3,7 +3,7 @@
 Agent Disciplines is a small package manager and resolver for portable agent context profiles. A discipline is an advisory curation layer over agent skills and tools: it helps an agent choose relevant context first, without hiding skills, enforcing policy, or installing MCPs/CLIs automatically.
 
 ```sh
-npx disciplines add tomcerdeira/agent-disciplines --all --agent '*' --global
+npx disciplines add tomcerdeira/disciplines --all --agent '*' --global
 npx disciplines use installed --task "Fix keyboard navigation" --file src/components/SearchResults.tsx
 npx disciplines doctor
 ```
@@ -73,14 +73,14 @@ Authoring guide: [docs/authoring-disciplines.md](docs/authoring-disciplines.md)
 Install disciplines from a source:
 
 ```sh
-npx disciplines add tomcerdeira/agent-disciplines --discipline frontend-engineer
-npx disciplines add tomcerdeira/agent-disciplines --all --agent '*' --global --yes
+npx disciplines add tomcerdeira/disciplines --discipline frontend-engineer
+npx disciplines add tomcerdeira/disciplines --all --agent '*' --global --yes
 ```
 
 Use a discipline without installing:
 
 ```sh
-npx disciplines use tomcerdeira/agent-disciplines@frontend-engineer
+npx disciplines use tomcerdeira/disciplines@frontend-engineer
 ```
 
 Resolve a task against installed disciplines:
@@ -111,9 +111,9 @@ npx disciplines init software-engineer
 Supported source formats include GitHub shorthand, full GitHub URLs, GitHub tree URLs, generic git URLs, and local paths:
 
 ```sh
-npx disciplines add tomcerdeira/agent-disciplines
-npx disciplines add https://github.com/tomcerdeira/agent-disciplines
-npx disciplines add https://github.com/tomcerdeira/agent-disciplines/tree/main/disciplines/frontend-engineer
+npx disciplines add tomcerdeira/disciplines
+npx disciplines add https://github.com/tomcerdeira/disciplines
+npx disciplines add https://github.com/tomcerdeira/disciplines/tree/main/disciplines/frontend-engineer
 npx disciplines add ./local-disciplines
 ```
 

@@ -5,8 +5,8 @@ The resolver works without runtime integration, but you can make it feel more li
 The easiest path is the CLI:
 
 ```sh
-npx disciplines add tomcerdeira/agent-disciplines --agent claude-code --global --yes
-npx disciplines add tomcerdeira/agent-disciplines --all --agent '*' --project --yes
+npx disciplines add tomcerdeira/disciplines --agent claude-code --global --yes
+npx disciplines add tomcerdeira/disciplines --all --agent '*' --project --yes
 ```
 
 See [cli.md](cli.md) for supported sources, agents, scopes, and overwrite behavior. The manual options below are useful when you want to inspect or customize the generated files.

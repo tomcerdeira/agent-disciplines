@@ -36,16 +36,16 @@ function usage() {
   disciplines cleanup [--global|--project] [--disciplines] [--all] [--yes]
 
 Sources:
-  tomcerdeira/agent-disciplines
-  https://github.com/tomcerdeira/agent-disciplines
-  https://github.com/tomcerdeira/agent-disciplines/tree/main/disciplines/frontend-engineer
-  git@github.com:tomcerdeira/agent-disciplines.git
+  tomcerdeira/disciplines
+  https://github.com/tomcerdeira/disciplines
+  https://github.com/tomcerdeira/disciplines/tree/main/disciplines/frontend-engineer
+  git@github.com:tomcerdeira/disciplines.git
   ./local-disciplines
 
 Examples:
-  disciplines add tomcerdeira/agent-disciplines --discipline frontend-engineer
-  disciplines add tomcerdeira/agent-disciplines --all --agent '*' --global --yes
-  disciplines use tomcerdeira/agent-disciplines@frontend-engineer
+  disciplines add tomcerdeira/disciplines --discipline frontend-engineer
+  disciplines add tomcerdeira/disciplines --all --agent '*' --global --yes
+  disciplines use tomcerdeira/disciplines@frontend-engineer
   disciplines use installed --task "Fix keyboard navigation" --file src/components/SearchResults.tsx
   disciplines list
   disciplines find frontend
@@ -836,7 +836,7 @@ async function commandDoctor(options) {
   await checkOldInstall("old project Cursor rule", path.join(projectRoot(), ".cursor", "rules", "agent-degrees.mdc"));
 
   if (installedCount === 0) {
-    doctorLine("WARN", "installed disciplines", "none found; run `npx disciplines add tomcerdeira/agent-disciplines --all`");
+    doctorLine("WARN", "installed disciplines", "none found; run `npx disciplines add tomcerdeira/disciplines --all`");
   }
 
   if (failures > 0) {

@@ -19,17 +19,17 @@ disciplines cleanup [--global|--project] [--disciplines] [--all] [--yes]
 ## Source Formats
 
 ```sh
-disciplines add tomcerdeira/agent-disciplines
-disciplines add https://github.com/tomcerdeira/agent-disciplines
-disciplines add https://github.com/tomcerdeira/agent-disciplines/tree/main/disciplines/frontend-engineer
-disciplines add git@github.com:tomcerdeira/agent-disciplines.git
+disciplines add tomcerdeira/disciplines
+disciplines add https://github.com/tomcerdeira/disciplines
+disciplines add https://github.com/tomcerdeira/disciplines/tree/main/disciplines/frontend-engineer
+disciplines add git@github.com:tomcerdeira/disciplines.git
 disciplines add ./local-disciplines
 ```
 
 Use `@id` when selecting one discipline from a source:
 
 ```sh
-disciplines use tomcerdeira/agent-disciplines@frontend-engineer
+disciplines use tomcerdeira/disciplines@frontend-engineer
 ```
 
 ## Install
@@ -37,13 +37,13 @@ disciplines use tomcerdeira/agent-disciplines@frontend-engineer
 Install one discipline:
 
 ```sh
-disciplines add tomcerdeira/agent-disciplines --discipline frontend-engineer
+disciplines add tomcerdeira/disciplines --discipline frontend-engineer
 ```
 
 Install every discipline and every supported adapter globally:
 
 ```sh
-disciplines add tomcerdeira/agent-disciplines --all --agent '*' --global --yes
+disciplines add tomcerdeira/disciplines --all --agent '*' --global --yes
 ```
 
 Supported agents:
@@ -75,7 +75,7 @@ Overwrite behavior:
 Use without installing:
 
 ```sh
-disciplines use tomcerdeira/agent-disciplines@frontend-engineer
+disciplines use tomcerdeira/disciplines@frontend-engineer
 ```
 
 Resolve a task against installed disciplines:
@@ -94,7 +94,7 @@ The output is a task-local bundle with selected disciplines, score evidence, inc
 ```sh
 disciplines list
 disciplines ls --global
-disciplines list tomcerdeira/agent-disciplines --discipline frontend-engineer
+disciplines list tomcerdeira/disciplines --discipline frontend-engineer
 disciplines find react
 ```
 
