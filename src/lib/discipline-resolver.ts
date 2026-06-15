@@ -2,6 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
+import { z } from "zod";
 
 export type ToolKind = "mcp" | "cli" | "browser" | "package-manager" | "runtime" | "service" | "other";
 export type ResolutionDecision = "select" | "compose" | "ask" | "none";
@@ -99,6 +100,44 @@ export interface ResolverBundle {
   scores: DisciplineScore[];
 }
 
+const idPattern = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
+const portableIdPattern = /^[A-Za-z0-9][A-Za-z0-9._:/-]*$/;
+const semverPattern = /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/;
+
+const recommendedToolSchema = z.object({
+  id: z.string().regex(portableIdPattern),
+  kind: z.enum(["mcp", "cli", "browser", "package-manager", "runtime", "service", "other"]),
+  purpose: z.string().min(1),
+  when: z.string().min(1).optional(),
+  optional: z.boolean().optional(),
+}).strict();
+
+const promptSignalsSchema = z.object({
+  phrases: z.array(z.string().min(1)),
+  allOf: z.array(z.array(z.string().min(1)).min(1)),
+  anyOf: z.array(z.string().min(1)),
+  noneOf: z.array(z.string().min(1)),
+}).strict();
+
+const disciplineFrontmatterSchema = z.object({
+  id: z.string().regex(idPattern),
+  name: z.string().min(1),
+  version: z.string().regex(semverPattern),
+  description: z.string().min(1),
+  aliases: z.array(z.string().min(1)).optional(),
+  includeSkills: z.array(z.string().regex(portableIdPattern)).min(1),
+  recommendedTools: z.array(recommendedToolSchema),
+  softExcludeSkills: z.array(z.string().regex(portableIdPattern)),
+  activation: z.object({
+    pathPatterns: z.array(z.string().min(1)),
+    commandPatterns: z.array(z.string().min(1)),
+    promptSignals: promptSignalsSchema,
+    minScore: z.number().min(0),
+  }).strict(),
+  confidenceThreshold: z.number().min(0).max(1).optional(),
+  notes: z.string().min(1).optional(),
+}).strict();
+
 export function stripJsonComments(source: string): string {
   return source.replace(/^\s*\/\/.*$/gm, "");
 }
@@ -119,6 +158,22 @@ export function splitDisciplineFile(source: string, filePath: string): { frontma
   };
 }
 
+function formatZodPath(pathParts: PropertyKey[]): string {
+  return pathParts.length > 0 ? pathParts.join(".") : "frontmatter";
+}
+
+function parseDisciplineFrontmatter(frontmatter: string, filePath: string): Omit<Discipline, "packageId" | "filePath" | "body"> {
+  const yaml = YAML.parse(frontmatter);
+  const parsed = disciplineFrontmatterSchema.safeParse(yaml);
+
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    throw new Error(`${filePath}: invalid frontmatter at ${formatZodPath(issue.path)}: ${issue.message}`);
+  }
+
+  return parsed.data;
+}
+
 export async function loadDisciplines(root: string): Promise<Discipline[]> {
   if (existsSync(path.join(root, "DISCIPLINE.md"))) {
     const packageName = path.basename(root);
@@ -126,7 +181,7 @@ export async function loadDisciplines(root: string): Promise<Discipline[]> {
     const source = await readFile(path.join(root, "DISCIPLINE.md"), "utf8");
     const { frontmatter, body } = splitDisciplineFile(source, relativePath);
     return [{
-      ...YAML.parse(frontmatter),
+      ...parseDisciplineFrontmatter(frontmatter, relativePath),
       packageId: packageName,
       filePath: relativePath,
       body,
@@ -147,7 +202,7 @@ export async function loadDisciplines(root: string): Promise<Discipline[]> {
     const source = await readFile(absolutePath, "utf8");
     const { frontmatter, body } = splitDisciplineFile(source, relativePath);
     disciplines.push({
-      ...YAML.parse(frontmatter),
+      ...parseDisciplineFrontmatter(frontmatter, relativePath),
       packageId: packageName,
       filePath: relativePath,
       body,

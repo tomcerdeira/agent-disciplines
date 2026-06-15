@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { readFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import {
@@ -30,6 +31,30 @@ function formatTopScores(scored) {
     .slice(0, 3)
     .map((result) => `${result.disciplineId}:${result.score}`)
     .join(", ");
+}
+
+async function assertInvalidFrontmatterFails() {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "disciplines-invalid-"));
+  const packageDir = path.join(tempRoot, "disciplines", "broken");
+  await mkdir(packageDir, { recursive: true });
+  await writeFile(path.join(packageDir, "DISCIPLINE.md"), `---
+id: broken
+name: Broken
+version: 0.1.0
+description: Missing required resolver fields.
+---
+
+This should fail before scoring.
+`);
+
+  try {
+    await loadDisciplines(tempRoot);
+  } catch (error) {
+    if (String(error.message).includes("invalid frontmatter")) return;
+    throw new Error(`invalid frontmatter fixture failed with unexpected error: ${error.message}`);
+  }
+
+  throw new Error("invalid frontmatter fixture did not fail");
 }
 
 async function main() {
@@ -64,6 +89,8 @@ async function main() {
   }
 
   console.log(`Resolver fixture check passed (${cases.length} cases).`);
+  await assertInvalidFrontmatterFails();
+  console.log("Resolver invalid frontmatter check passed.");
 }
 
 main().catch((error) => {
