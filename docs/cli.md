@@ -124,6 +124,8 @@ disciplines update frontend-engineer --project
 
 `update` refreshes cached git sources and relinks or recopies installed packages based on their manifest entries.
 
+Each project or global store includes a local `.disciplines-manifest.json`. The manifest records source roots, source paths, install mode, and git revisions. `doctor` validates this manifest and warns about entries that no longer have an installed package.
+
 ## Init
 
 ```sh

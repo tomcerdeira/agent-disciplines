@@ -10,6 +10,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import { Command } from "commander";
+import { z } from "zod";
 import {
   createResolverBundle,
   formatPromptBundle,
@@ -24,6 +25,24 @@ const SOURCE_STORE_DIR = path.join(os.homedir(), ".agent-disciplines", "sources"
 const GLOBAL_STORE_ROOT = path.join(os.homedir(), ".agent-disciplines");
 const PROJECT_STORE_ROOT = path.join(process.cwd(), ".agents");
 const MANIFEST_FILE = ".disciplines-manifest.json";
+
+const manifestEntrySchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1).optional(),
+  description: z.string().optional(),
+  source: z.string().min(1).optional(),
+  sourceRoot: z.string().min(1).optional(),
+  sourcePath: z.string().optional(),
+  sourceRev: z.string().nullable().optional(),
+  mode: z.enum(["copy", "symlink"]).optional(),
+  installedAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+}).passthrough();
+
+const manifestSchema = z.object({
+  version: z.number().int().positive(),
+  disciplines: z.record(z.string(), manifestEntrySchema),
+}).passthrough();
 
 function sourceSlug(source) {
   return source
@@ -166,10 +185,19 @@ function manifestPath(storeRoot) {
 }
 
 async function readManifest(storeRoot) {
+  const filePath = manifestPath(storeRoot);
   try {
-    return JSON.parse(await readFile(manifestPath(storeRoot), "utf8"));
-  } catch {
-    return { version: 1, disciplines: {} };
+    const json = JSON.parse(await readFile(filePath, "utf8"));
+    const parsed = manifestSchema.safeParse(json);
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      const issuePath = issue.path.length > 0 ? issue.path.join(".") : "manifest";
+      throw new Error(`${filePath}: invalid manifest at ${issuePath}: ${issue.message}`);
+    }
+    return parsed.data;
+  } catch (error) {
+    if (error?.code === "ENOENT") return { version: 1, disciplines: {} };
+    throw error;
   }
 }
 
@@ -764,7 +792,14 @@ async function checkStore(scope) {
   let installedCount = 0;
   const storeRoot = storeRootForScope(scope);
   const root = disciplineDir(storeRoot);
-  const manifest = await readManifest(storeRoot);
+  let manifest;
+
+  try {
+    manifest = await readManifest(storeRoot);
+  } catch (error) {
+    doctorLine("FAIL", `${scope} manifest`, error.message);
+    return { failures: 1, installedCount };
+  }
 
   if (!existsSync(root)) {
     doctorLine("WARN", `${scope} store`, `${root} not found`);
@@ -795,6 +830,13 @@ async function checkStore(scope) {
       doctorLine("FAIL", `${scope}:${discipline.id}`, `broken symlink -> ${status.target}`);
     } else {
       doctorLine("OK", `${scope}:${discipline.id}`, `${entry.mode ?? status.kind}`);
+    }
+  }
+
+  const installedIds = new Set(disciplines.map((discipline) => discipline.id));
+  for (const id of Object.keys(manifest.disciplines)) {
+    if (!installedIds.has(id)) {
+      doctorLine("WARN", `${scope}:${id}`, "manifest entry has no installed package");
     }
   }
 

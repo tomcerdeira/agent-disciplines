@@ -18,6 +18,15 @@ async function run(args, options: any = {}) {
   });
 }
 
+async function runFailure(args, options: any = {}) {
+  try {
+    await run(args, options);
+  } catch (error) {
+    return error;
+  }
+  throw new Error(`Expected command to fail: ${args.join(" ")}`);
+}
+
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
@@ -55,6 +64,32 @@ async function main() {
   await run(["remove", "frontend-engineer", "--project", "--yes"], { cwd: projectDir });
   const projectListAfterRemove = await run(["list", "--project"], { cwd: projectDir });
   assert(!projectListAfterRemove.stdout.includes("frontend-engineer"), "remove did not delete frontend-engineer");
+
+  await writeFile(path.join(projectDir, ".agents", ".disciplines-manifest.json"), JSON.stringify({
+    version: 1,
+    disciplines: {
+      ghost: {
+        id: "ghost",
+        source: root,
+        sourceRoot: root,
+        sourcePath: "disciplines/frontend-engineer",
+        mode: "copy",
+      },
+    },
+  }, null, 2));
+  const staleManifestDoctor = await run(["doctor", "--project"], { cwd: projectDir });
+  assert(staleManifestDoctor.stdout.includes("WARN\tproject:ghost\tmanifest entry has no installed package"), "doctor did not warn about stale manifest entry");
+
+  await writeFile(path.join(projectDir, ".agents", ".disciplines-manifest.json"), JSON.stringify({
+    version: 1,
+    disciplines: {
+      ghost: {
+        id: 123,
+      },
+    },
+  }, null, 2));
+  const invalidManifestDoctor: any = await runFailure(["doctor", "--project"], { cwd: projectDir });
+  assert(invalidManifestDoctor.stdout.includes("FAIL\tproject manifest"), "doctor did not fail invalid manifest");
 
   const globalHome = await mkdtemp(path.join(os.tmpdir(), "disciplines-home-"));
   await run(["add", root, "--discipline", "backend-engineer", "--global", "--copy", "--yes"], {
