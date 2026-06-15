@@ -201,10 +201,7 @@ These are examples, not a universal ontology. Real teams should rename skill ids
 
 ```sh
 npm install
-npm run validate
-npm run check:fixtures
-npm run check:cli
-npm run check:package
+npm run check:all
 ```
 
 Useful local smoke tests:
@@ -213,8 +210,10 @@ Useful local smoke tests:
 npm run build
 node dist/disciplines.js list .
 node dist/disciplines.js use . --task "Fix keyboard navigation" --file src/components/SearchResults.tsx
-npm publish --dry-run --access public
+npm run check:release
 ```
+
+Release checklist: [docs/release.md](docs/release.md)
 
 ## Scope
 

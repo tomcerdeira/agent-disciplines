@@ -1,6 +1,6 @@
 {
   "name": "disciplines",
-  "version": "0.2.4",
+  "version": "0.9.9",
   "description": "Spec-first portable discipline profiles for agent skills and tools.",
   "type": "module",
   "license": "MIT",
@@ -41,6 +41,8 @@
     "check:fixtures": "npm run build --silent && node dist/check-resolver-fixtures.js",
     "check:cli": "npm run build --silent && node dist/check-cli-workflows.js",
     "check:package": "npm run build --silent && node dist/check-package.js",
+    "check:all": "npm run typecheck && npm run validate && npm run check:fixtures && npm run check:cli && npm run check:package",
+    "check:release": "npm run build --silent && node dist/check-release.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
