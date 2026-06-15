@@ -158,7 +158,8 @@ function installedAggregateRoot() {
 }
 
 function normalizeAgents(values) {
-  if (values.length === 0 || values.includes("*")) return AGENTS;
+  if (values.length === 0) return [];
+  if (values.includes("*")) return AGENTS;
   const unknown = values.filter((agent) => !AGENTS.includes(agent));
   if (unknown.length > 0) throw new Error(`Unknown agent(s): ${unknown.join(", ")}`);
   return [...new Set(values)];

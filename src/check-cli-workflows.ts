@@ -35,6 +35,11 @@ async function main() {
   const projectDir = await mkdtemp(path.join(os.tmpdir(), "disciplines-project-"));
 
   await run(["add", root, "--discipline", "frontend-engineer", "--project", "--yes"], { cwd: projectDir });
+  assert(!existsSync(path.join(projectDir, "AGENTS.md")), "add wrote Codex glue without --agent");
+  assert(!existsSync(path.join(projectDir, "CLAUDE.md")), "add wrote Claude glue without --agent");
+
+  await run(["add", root, "--discipline", "frontend-engineer", "--project", "--agent", "codex", "--yes"], { cwd: projectDir });
+  assert(existsSync(path.join(projectDir, "AGENTS.md")), "add --agent codex did not write Codex glue");
 
   const projectList = await run(["list", "--project"], { cwd: projectDir });
   assert(projectList.stdout.includes("project\tfrontend-engineer"), "project list did not include frontend-engineer");

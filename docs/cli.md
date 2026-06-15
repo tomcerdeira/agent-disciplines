@@ -56,6 +56,8 @@ Supported agents:
 - `cursor`: writes Cursor rule files.
 - `*`: installs every supported adapter.
 
+If `--agent` is omitted, `add` installs only discipline packages and does not write Claude Code, Codex, or Cursor glue.
+
 Scopes:
 
 - `--project`: installs under `.agents/disciplines/` in the current project.

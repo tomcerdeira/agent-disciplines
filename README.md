@@ -155,6 +155,8 @@ Global installs live in:
 
 `add` uses symlinks by default and `--copy` when you want a copied package. Agent glue can be installed for Claude Code, Codex, and Cursor with `--agent claude-code|codex|cursor|*`.
 
+When `--agent` is omitted, `add` installs only the discipline package and does not write agent-specific files.
+
 Each store has a local `.disciplines-manifest.json` that records installed ids, source roots, source paths, install mode, and git revisions for update checks. `doctor` validates that manifest and warns when entries no longer have an installed package.
 
 `check` fetches git metadata for installed sources and reports whether manifest-recorded revisions are current. It does not relink, copy, or mutate installed discipline packages. Run `update` after `check` when updates are available.
