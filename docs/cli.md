@@ -6,6 +6,7 @@ The `disciplines` CLI is a small package manager for discipline packages. It int
 
 ```sh
 disciplines add <source> [--discipline <ids...>|--all] [--agent <agents...>] [--global|--project] [--copy] [--yes] [--list]
+disciplines install [--config path] [--agent <agents...>] [--global|--project] [--copy] [--yes]
 disciplines use <source[@discipline]|installed> [--discipline <ids...>] [--task "..."] [--file path] [--command cmd] [--format prompt|json]
 disciplines list|ls [source] [--global|--project]
 disciplines find [query] [--global|--project]
@@ -57,6 +58,30 @@ Supported agents:
 - `*`: installs every supported adapter.
 
 If `--agent` is omitted, `add` installs only discipline packages and does not write Claude Code, Codex, or Cursor glue.
+
+Restore from a project config:
+
+```sh
+disciplines install
+disciplines install --config disciplines.json --project --yes
+```
+
+`disciplines.json` is intentionally small and portable:
+
+```json
+{
+  "version": 1,
+  "disciplines": [
+    {
+      "source": "tomcerdeira/disciplines",
+      "discipline": "frontend-engineer",
+      "agents": ["codex"]
+    }
+  ]
+}
+```
+
+Each entry supports `source`, `discipline` or `disciplines`, `all`, `agents`, and `copy`. Command flags such as `--project`, `--global`, and `--yes` still control the restore scope and overwrite behavior.
 
 Scopes:
 

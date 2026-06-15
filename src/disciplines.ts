@@ -25,6 +25,7 @@ const SOURCE_STORE_DIR = path.join(os.homedir(), ".agent-disciplines", "sources"
 const GLOBAL_STORE_ROOT = path.join(os.homedir(), ".agent-disciplines");
 const PROJECT_STORE_ROOT = path.join(process.cwd(), ".agents");
 const MANIFEST_FILE = ".disciplines-manifest.json";
+const CONFIG_FILE = "disciplines.json";
 
 const manifestEntrySchema = z.object({
   id: z.string().min(1),
@@ -43,6 +44,20 @@ const manifestSchema = z.object({
   version: z.number().int().positive(),
   disciplines: z.record(z.string(), manifestEntrySchema),
 }).passthrough();
+
+const installConfigEntrySchema = z.object({
+  source: z.string().min(1),
+  discipline: z.union([z.string().min(1), z.array(z.string().min(1))]).optional(),
+  disciplines: z.array(z.string().min(1)).optional(),
+  all: z.boolean().optional(),
+  agents: z.array(z.string().min(1)).optional(),
+  copy: z.boolean().optional(),
+}).strict();
+
+const installConfigSchema = z.object({
+  version: z.number().int().positive(),
+  disciplines: z.array(installConfigEntrySchema).min(1),
+}).strict();
 
 function sourceSlug(source) {
   return source
@@ -550,6 +565,41 @@ async function commandAdd(sourceArg, options) {
   }
 }
 
+async function readInstallConfig(configPath) {
+  const source = JSON.parse(await readFile(configPath, "utf8"));
+  const parsed = installConfigSchema.safeParse(source);
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    const issuePath = issue.path.length > 0 ? issue.path.join(".") : "config";
+    throw new Error(`${configPath}: invalid config at ${issuePath}: ${issue.message}`);
+  }
+  return parsed.data;
+}
+
+function entryDisciplines(entry) {
+  const ids = [
+    ...asArray(entry.discipline),
+    ...(entry.disciplines ?? []),
+  ];
+  return [...new Set(ids)];
+}
+
+async function commandInstall(options) {
+  const configPath = path.resolve(projectRoot(), options.config ?? CONFIG_FILE);
+  const config = await readInstallConfig(configPath);
+
+  for (const entry of config.disciplines) {
+    await commandAdd(entry.source, {
+      ...options,
+      disciplines: entryDisciplines(entry),
+      agents: entry.agents ?? options.agents,
+      all: Boolean(entry.all),
+      copy: entry.copy ?? options.copy,
+      list: false,
+    });
+  }
+}
+
 async function commandRemove(args, options) {
   const ids = selectedIdsFromOptions({ ...options, disciplines: [...options.disciplines, ...args] });
   if (ids !== "*" && ids.length === 0) throw new Error("remove requires discipline ids or --all");
@@ -1014,6 +1064,7 @@ function normalizedOptions(raw, positional = []) {
     yes: Boolean(options.yes),
     list: Boolean(options.list),
     all: Boolean(options.all),
+    config: options.config,
     cleanDisciplines: Boolean(options.disciplines),
   };
 }
@@ -1064,6 +1115,14 @@ Examples:
     .option("-y, --yes", "Skip confirmation prompts")
     .option("-l, --list", "List available disciplines without installing")))
     .action((source, raw) => commandAdd(source, normalizedOptions(raw)));
+
+  addScopeOptions(program.command("install")
+    .description("Install disciplines from a disciplines.json config")
+    .option("-c, --config <path>", "Config file path", CONFIG_FILE)
+    .option("-a, --agent <agents...>", "Override agent glue targets; use '*' for all")
+    .option("--copy", "Copy packages instead of symlinking")
+    .option("-y, --yes", "Skip confirmation prompts"))
+    .action((raw) => commandInstall(normalizedOptions(raw)));
 
   addSelectionOptions(program.command("use <source>")
     .description("Resolve a task with a source or installed disciplines")

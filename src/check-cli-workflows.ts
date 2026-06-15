@@ -96,6 +96,20 @@ async function main() {
   const invalidManifestDoctor: any = await runFailure(["doctor", "--project"], { cwd: projectDir });
   assert(invalidManifestDoctor.stdout.includes("FAIL\tproject manifest"), "doctor did not fail invalid manifest");
 
+  const installDir = await mkdtemp(path.join(os.tmpdir(), "disciplines-install-"));
+  await writeFile(path.join(installDir, "disciplines.json"), JSON.stringify({
+    version: 1,
+    disciplines: [
+      {
+        source: root,
+        discipline: "frontend-engineer",
+      },
+    ],
+  }, null, 2));
+  await run(["install", "--project", "--yes"], { cwd: installDir });
+  const installedFromConfig = await run(["list", "--project"], { cwd: installDir });
+  assert(installedFromConfig.stdout.includes("project\tfrontend-engineer"), "install did not restore discipline from config");
+
   const globalHome = await mkdtemp(path.join(os.tmpdir(), "disciplines-home-"));
   await run(["add", root, "--discipline", "backend-engineer", "--global", "--copy", "--yes"], {
     env: { HOME: globalHome },

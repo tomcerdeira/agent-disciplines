@@ -94,6 +94,7 @@ npx disciplines use installed \
 Inspect and manage installs:
 
 ```sh
+npx disciplines install
 npx disciplines list
 npx disciplines find frontend
 npx disciplines check
@@ -121,6 +122,23 @@ npx disciplines add ./local-disciplines
 ```
 
 Full CLI reference: [docs/cli.md](docs/cli.md)
+
+Projects can commit a small `disciplines.json` for reproducible setup:
+
+```json
+{
+  "version": 1,
+  "disciplines": [
+    {
+      "source": "tomcerdeira/disciplines",
+      "discipline": "frontend-engineer",
+      "agents": ["codex"]
+    }
+  ]
+}
+```
+
+Run `npx disciplines install --project --yes` to restore the configured packages and optional agent glue.
 
 ## Programmatic API
 
